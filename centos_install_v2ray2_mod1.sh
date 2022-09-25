@@ -305,13 +305,7 @@ getCert() {
 }
 
 installV2ray() {
-    colorEcho $BLUE " 安装v2ray..."
-    bash <(curl -sL ${V6_PROXY}https://raw.githubusercontent.com/hijkpw/scripts/master/goV2.sh)
 
-    if [[ ! -f $CONFIG_FILE ]]; then
-        colorEcho $RED " $OS 安装V2ray失败，请到 https://hijk.art 网站反馈"
-        exit 1
-    fi
 
     alterid=0
     sed -i -e "s/alterId\":.*[0-9]*/alterId\": ${alterid}/" $CONFIG_FILE
