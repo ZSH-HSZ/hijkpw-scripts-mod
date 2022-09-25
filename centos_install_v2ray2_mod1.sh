@@ -306,32 +306,6 @@ getCert() {
 
 installV2ray() {
     colorEcho $BLUE " 安装v2ray..."
-
-    alterid=0
-    sed -i -e "s/alterId\":.*[0-9]*/alterId\": ${alterid}/" $CONFIG_FILE
-    uid=`grep id $CONFIG_FILE| cut -d: -f2 | tr -d \",' '`
-    V2PORT=`grep port $CONFIG_FILE| cut -d: -f2 | tr -d \",' '`
-    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-    ntpdate -u time.nist.gov
-
-    res=`grep streamSettings $CONFIG_FILE`
-    if [[ "$res" = "" ]]; then
-        line=`grep -n '}]' $CONFIG_FILE  | head -n1 | cut -d: -f1`
-        line=`expr ${line} - 1`
-        sed -i "${line}s/}/},/" $CONFIG_FILE
-        sed -i "${line}a\    \"streamSettings\": {\n      \"network\": \"ws\",\n      \"wsSettings\": {\n        \"path\": \"${WSPATH}\",\n        \"headers\": {\n          \"Host\": \"${DOMAIN}\"\n        }\n      }\n    },\n    \"listen\": \"127.0.0.1\"" $CONFIG_FILE
-    else
-        sed -i -e "s/path\":.*/path\": \"\\${WSPATH}\",/" $CONFIG_FILE
-    fi
-
-    systemctl enable v2ray
-    systemctl restart v2ray
-    sleep 3
-    res=`ss -ntlp| grep ${V2PORT} | grep v2ray`
-    if [[ "${res}" = "" ]]; then
-        colorEcho $RED " $OS 端口号：${PORT}，伪装路径：${WSPATH}， v2启动失败，请检查端口是否被占用或伪装路径是否有特殊字符！！"
-        exit 1
-    fi
     colorEcho $GREEN " v2ray安装成功！"
 }
 
